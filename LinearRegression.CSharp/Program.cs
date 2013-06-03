@@ -7,9 +7,11 @@
     using MathNet.Numerics.LinearAlgebra.Generic;
     using MathNet.Numerics.Statistics;
 
+    using Vector = MicrosoftResearch.Infer.Maths.Vector;
+
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Loading data...");
 
@@ -22,6 +24,7 @@
 
             UseGradientDescent(sourceX, y);
             UseNormalEquation(sourceX, y);
+            UseAdvancedOptimization(sourceX, y);
 
             Console.WriteLine("Done!");
             Console.ReadLine();
@@ -41,7 +44,6 @@
 
             var results = GradientDescent(x, y, DenseVector.Create(x.ColumnCount, i => 0), 0.01, 1000);
             var theta = results.Item1;
-            var jHistory = results.Item2;
 
             Console.WriteLine("Theta computed (using gradient descent): {0}", theta);
             var price = new DenseVector(new[] { 1.0, (1650.0 - mu[0]) / sigma[0], (3.0 - mu[1]) / sigma[1] }) * theta;
@@ -60,6 +62,26 @@
             var price = new DenseVector(new[] { 1.0, 1650.0, 3.0 }) * theta;
 
             Console.WriteLine("Predicted price of a 1650 sq-ft, 3 br house (using normal equation): {0}", price);
+        }
+
+        private static void UseAdvancedOptimization(DenseMatrix sourceX, DenseVector y)
+        {
+            Console.WriteLine("Normalizing features...");
+
+            var normalizeResults = FeatureNormalize(sourceX);
+            var xNormalized = normalizeResults.Item1;
+            var mu = normalizeResults.Item2;
+            var sigma = normalizeResults.Item3;
+            var x = xNormalized.InsertColumn(0, DenseVector.Create(sourceX.RowCount, i => 1));
+
+            Console.WriteLine("Running advanced optimization...");
+
+            var theta = AdvancedOptimization(x, y, DenseVector.Create(x.ColumnCount, i => 0), 0);
+
+            Console.WriteLine("Theta computed (using advanced optimization): {0}", theta);
+            var price = new DenseVector(new[] { 1.0, (1650.0 - mu[0]) / sigma[0], (3.0 - mu[1]) / sigma[1] }) * theta;
+
+            Console.WriteLine("Predicted price of a 1650 sq-ft, 3 br house (using advanced optimization): {0}", price);
         }
 
         private static Tuple<DenseMatrix, DenseVector, DenseVector> FeatureNormalize(Matrix<double> x)
@@ -90,6 +112,44 @@
             }
 
             return Tuple.Create(theta, jHistory);
+        }
+
+        private static Vector<double> AdvancedOptimization(Matrix<double> x, Vector<double> y, Vector<double> theta, double lambda)
+        {
+            var m = x.RowCount;
+            var featureCount = theta.Count;
+            var xTranspose = x.Transpose();
+
+            // TODO: convert all of this to use MicrosoftResearch.Infer.Maths instead of MathNet.Numerics
+            var solver = new MicrosoftResearch.Infer.Maths.BFGS();
+            var minTheta = solver.Run(
+                MicrosoftResearch.Infer.Maths.DenseVector.FromList(theta),
+                10000,
+                (Vector vector, ref Vector dX) =>
+                    {
+                        var newTheta = DenseVector.Create(featureCount, n => vector[n]);
+
+                        var regTheta = DenseVector.OfVector(newTheta);
+                        regTheta[0] = 0;
+
+                        var regThetaSq = DenseVector.OfVector(regTheta);
+                        regThetaSq.MapInplace(t => t * t);
+
+                        var h = x * newTheta - y;
+
+                        var cost = ((h * h) / (2D * m)) + ((lambda / (2D * m)) * regThetaSq.Sum());
+
+                        var grad = ((1D / m) * (xTranspose * h)) + ((lambda / m) * regTheta);
+
+                        for (var j = 0; j < grad.Count; j++)
+                        {
+                            dX[j] = grad[j];
+                        }
+
+                        return cost;
+                    });
+  
+            return DenseVector.Create(theta.Count, i => minTheta[i]);
         }
     }
 }
