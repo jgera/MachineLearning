@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinearRegression.CSharp", "
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LinearRegression.FSharp", "LinearRegression.FSharp\LinearRegression.FSharp.fsproj", "{8C3BAAB1-4053-4BDE-8A84-ADC1882DB423}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogisticalRegression.CSharp", "LogisticalRegression.CSharp\LogisticalRegression.CSharp.csproj", "{6FA1113E-F6F5-4325-AF9B-11597ABF66E5}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LogisticalRegression.FSharp", "LogisticalRegression.FSharp\LogisticalRegression.FSharp.fsproj", "{DB03CD3E-5C0C-4C0E-869A-2F52B51373E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,14 @@ Global
 		{8C3BAAB1-4053-4BDE-8A84-ADC1882DB423}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C3BAAB1-4053-4BDE-8A84-ADC1882DB423}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C3BAAB1-4053-4BDE-8A84-ADC1882DB423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA1113E-F6F5-4325-AF9B-11597ABF66E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA1113E-F6F5-4325-AF9B-11597ABF66E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA1113E-F6F5-4325-AF9B-11597ABF66E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA1113E-F6F5-4325-AF9B-11597ABF66E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB03CD3E-5C0C-4C0E-869A-2F52B51373E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB03CD3E-5C0C-4C0E-869A-2F52B51373E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB03CD3E-5C0C-4C0E-869A-2F52B51373E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB03CD3E-5C0C-4C0E-869A-2F52B51373E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
